@@ -1,9 +1,11 @@
 import { Link, NavLink } from "react-router"
-import { Flame, LogOut } from "lucide-react"
+import { LogOut } from "lucide-react"
 import logo from "/favicon.ico"
 
+import packageJson from "../../package.json"
 import { Avatar } from "@/components/app-primitives"
-import { C, mockUser, navItems } from "@/lib/mock-data"
+import { C } from "@/lib/theme"
+import { navItems } from "@/lib/navigation"
 
 type AppSidebarProps = {
   open: boolean
@@ -86,15 +88,15 @@ export function AppSidebar({ open }: AppSidebarProps) {
       >
         {open ? (
           <div className="flex items-center gap-3 px-1">
-            <Avatar initials={mockUser.initials} size="sm" />
+            <Avatar initials="CR" size="sm" />
             <div className="min-w-0 flex-1">
               <p className="truncate text-xs font-medium text-foreground">
-                {mockUser.name}
+                Core mode
               </p>
-              <p className="flex items-center gap-1 text-xs text-muted-foreground">
+              {/* <p className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Flame size={10} style={{ color: C.pink }} />
-                {mockUser.streak} dias
-              </p>
+                local only
+              </p> */}
             </div>
             <button className="text-muted-foreground transition-colors hover:text-foreground">
               <LogOut size={14} />
@@ -107,7 +109,7 @@ export function AppSidebar({ open }: AppSidebarProps) {
         )}
         {open && (
           <p className="text-center text-xs text-muted-foreground opacity-40">
-            v2.4.1 · {mockUser.plan}
+            v {packageJson.version}
           </p>
         )}
       </div>

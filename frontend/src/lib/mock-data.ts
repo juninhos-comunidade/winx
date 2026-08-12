@@ -1,16 +1,4 @@
-import {
-  BookOpen,
-  Clock,
-  Flame,
-  History,
-  Layers,
-  LayoutDashboard,
-  Medal,
-  Play,
-  Settings,
-  Target,
-  Trophy,
-} from "lucide-react"
+import { BookOpen, Clock, Flame, Target, Trophy } from "lucide-react"
 
 export const C = {
   pink: "#db62a1",
@@ -31,21 +19,6 @@ export const mockUser = {
   rank: 7,
   plan: "Pro",
 }
-
-export const navItems = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, path: "/" },
-  { id: "stacks", label: "Stacks", icon: Layers, path: "/stacks" },
-  { id: "review", label: "Revisar agora", icon: Play, path: "/review" },
-  { id: "ranking", label: "Ranking", icon: Trophy, path: "/ranking" },
-  { id: "history", label: "Histórico", icon: History, path: "/history" },
-  {
-    id: "achievements",
-    label: "Conquistas",
-    icon: Medal,
-    path: "/achievements",
-  },
-  { id: "settings", label: "Configurações", icon: Settings, path: "/settings" },
-]
 
 export const lineData = [
   { day: "Seg", acc: 72 },
@@ -127,170 +100,6 @@ export const recentSessions = [
     accuracy: 94,
     time: "20min",
     points: 423,
-  },
-]
-
-export const stacks = [
-  {
-    id: 1,
-    name: "Anatomia",
-    icon: "🫀",
-    cards: 248,
-    progress: 72,
-    accuracy: 88,
-    color: "#db62a1",
-  },
-  {
-    id: 2,
-    name: "Fisiologia",
-    icon: "🧬",
-    cards: 185,
-    progress: 54,
-    accuracy: 76,
-    color: "#9c8ea8",
-  },
-  {
-    id: 3,
-    name: "Bioquímica",
-    icon: "⚗️",
-    cards: 132,
-    progress: 38,
-    accuracy: 82,
-    color: "#7c6fa8",
-  },
-  {
-    id: 4,
-    name: "Farmácia",
-    icon: "💊",
-    cards: 96,
-    progress: 61,
-    accuracy: 71,
-    color: "#4ade80",
-  },
-  {
-    id: 5,
-    name: "Histologia",
-    icon: "🔬",
-    cards: 74,
-    progress: 45,
-    accuracy: 84,
-    color: "#facc15",
-  },
-  {
-    id: 6,
-    name: "Patologia",
-    icon: "🧫",
-    cards: 53,
-    progress: 22,
-    accuracy: 67,
-    color: "#f07bc0",
-  },
-]
-
-export const reviewCards = [
-  {
-    q: "Qual é a função principal do nó sinoatrial?",
-    a: "O nó sinoatrial (SA) é o marca-passo natural do coração, gerando impulsos elétricos que iniciam cada batimento cardíaco a uma frequência de 60–100 bpm.",
-  },
-  {
-    q: "Defina pressão oncótica.",
-    a: "Pressão oncótica (coloidosmótica) é a pressão exercida pelas proteínas plasmáticas (principalmente albumina) que tende a puxar água de volta ao capilar, opondo-se à pressão hidrostática.",
-  },
-  {
-    q: "Quais são as etapas do ciclo de Krebs?",
-    a: "O ciclo de Krebs envolve 8 etapas enzimáticas que oxidam acetil-CoA, produzindo 3 NADH, 1 FADH₂, 1 GTP e 2 CO₂ por volta.",
-  },
-  {
-    q: "Mecanismo de ação da penicilina.",
-    a: "A penicilina inibe a transpeptidase (PBP), impedindo a ligação cruzada do peptidoglicano na parede celular bacteriana, levando à lise osmótica.",
-  },
-  {
-    q: "Diferença entre mitose e meiose.",
-    a: "Mitose: uma divisão, 2 células-filhas diploides, células somáticas. Meiose: duas divisões, 4 células-filhas haploides, gametas — com crossing-over para recombinação genética.",
-  },
-]
-
-export const rankingUsers = [
-  {
-    pos: 1,
-    name: "Pedro Henrique",
-    initials: "PH",
-    points: 4820,
-    streak: 41,
-    avatar: "#db62a1",
-  },
-  {
-    pos: 2,
-    name: "Mariana Costa",
-    initials: "MC",
-    points: 4390,
-    streak: 38,
-    avatar: "#9c8ea8",
-  },
-  {
-    pos: 3,
-    name: "Lucas Oliveira",
-    initials: "LO",
-    points: 3910,
-    streak: 29,
-    avatar: "#7c6fa8",
-  },
-  {
-    pos: 4,
-    name: "Sofia Mendes",
-    initials: "SM",
-    points: 3540,
-    streak: 22,
-    avatar: "#4ade80",
-  },
-  {
-    pos: 5,
-    name: "Rafael Torres",
-    initials: "RT",
-    points: 3120,
-    streak: 18,
-    avatar: "#facc15",
-  },
-  {
-    pos: 6,
-    name: "Camila Reis",
-    initials: "CR",
-    points: 2980,
-    streak: 15,
-    avatar: "#f07bc0",
-  },
-  {
-    pos: 7,
-    name: "Ana Clara",
-    initials: "AC",
-    points: 2740,
-    streak: 23,
-    avatar: C.pink,
-    isMe: true,
-  },
-  {
-    pos: 8,
-    name: "Bruno Alves",
-    initials: "BA",
-    points: 2410,
-    streak: 11,
-    avatar: "#6b6378",
-  },
-  {
-    pos: 9,
-    name: "Juliana Lima",
-    initials: "JL",
-    points: 2100,
-    streak: 8,
-    avatar: "#9c8ea8",
-  },
-  {
-    pos: 10,
-    name: "Diego Santos",
-    initials: "DS",
-    points: 1890,
-    streak: 5,
-    avatar: "#7c6fa8",
   },
 ]
 
@@ -392,24 +201,6 @@ export const achievements = [
     progress: 100,
   },
 ]
-
-export const customPageTitles: Record<string, string> = {
-  "/": "Dashboard",
-  "/stacks": "Stacks",
-  "/review": "Revisar agora",
-  "/ranking": "Ranking",
-  "/history": "Histórico",
-  "/achievements": "Conquistas",
-  "/settings": "Configurações",
-}
-
-export function formatDate() {
-  return new Intl.DateTimeFormat("pt-BR", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  }).format(new Date())
-}
 
 export function generateHeatmap() {
   const weeks: number[][] = []

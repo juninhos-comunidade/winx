@@ -1,131 +1,332 @@
-import { useEffect, useRef, useState } from "react"
-import { Clock, Eye, RotateCcw } from "lucide-react"
+import { useEffect, useMemo } from "react"
+import { Eye, RotateCcw } from "lucide-react"
 
-import { Badge, Card, ProgressBar } from "@/components/app-primitives"
-import { C, reviewCards } from "@/lib/mock-data"
+import {
+  Badge,
+  Card,
+  ProgressBar,
+  formatTimer,
+} from "@/components/app-primitives"
+import { C } from "@/lib/theme"
+import { useCategoryStore } from "@/stores/category-store"
+import { useCardStore } from "@/stores/card-store"
+import { useReviewStore } from "@/stores/review-store"
+
+const ratingMap = [
+  {
+    key: "1",
+    label: "Errei",
+    rating: "wrong" as const,
+    color: C.danger,
+    bg: `${C.danger}15`,
+  },
+  {
+    key: "2",
+    label: "Difícil",
+    rating: "hard" as const,
+    color: C.warning,
+    bg: `${C.warning}15`,
+  },
+  {
+    key: "3",
+    label: "Acertei",
+    rating: "right" as const,
+    color: C.success,
+    bg: `${C.success}15`,
+  },
+  {
+    key: "4",
+    label: "Fácil",
+    rating: "easy" as const,
+    color: C.pinkLight,
+    bg: `${C.pink}20`,
+  },
+]
 
 export function ReviewPage() {
-  const [cardIndex, setCardIndex] = useState(0)
-  const [flipped, setFlipped] = useState(false)
-  const [results, setResults] = useState<("wrong" | "hard" | "right" | "easy")[]>(
-    []
-  )
-  const [done, setDone] = useState(false)
-  const [timer, setTimer] = useState(0)
-  const [totalTime, setTotalTime] = useState(0)
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const { categories, selectedCategoryId, selectCategory } = useCategoryStore()
+  const cards = useCardStore((state) => state.cards)
+  const {
+    categoryId,
+    currentIndex,
+    flipped,
+    done,
+    elapsedSeconds,
+    results,
+    startSession,
+    toggleFlip,
+    answer,
+    tick,
+  } = useReviewStore()
+
+  const activeCategory =
+    categories.find((category) => category.id === selectedCategoryId) ??
+    categories[0] ??
+    null
+
+  const sessionCategory =
+    categories.find((category) => category.id === categoryId) ?? activeCategory
+
+  const availableCategory =
+    categories.find((category) =>
+      cards.some((card) => card.categoryId === category.id)
+    ) ?? null
+
+  const sessionCards = useMemo(() => {
+    if (!categoryId) return []
+    return cards.filter((card) => card.categoryId === categoryId)
+  }, [cards, categoryId])
+
+  const currentCard = sessionCards[currentIndex] ?? null
+  const total = sessionCards.length
 
   useEffect(() => {
-    if (done) return
-    intervalRef.current = setInterval(() => setTimer((t) => t + 1), 1000)
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current)
-    }
-  }, [cardIndex, done])
+    if (!categoryId || done) return
+
+    const timer = window.setInterval(() => tick(), 1000)
+    return () => window.clearInterval(timer)
+  }, [categoryId, done, tick])
 
   useEffect(() => {
-    setTimer(0)
-  }, [cardIndex])
-
-  const card = reviewCards[cardIndex]
-  const total = reviewCards.length
-
-  function answer(rating: "wrong" | "hard" | "right" | "easy") {
-    const newResults = [...results, rating]
-    setResults(newResults)
-    setTotalTime((t) => t + timer)
-    if (cardIndex + 1 >= total) {
-      setDone(true)
-    } else {
-      setCardIndex((i) => i + 1)
-      setFlipped(false)
+    if (!categories.length) return
+    if (!selectedCategoryId && categories[0]) {
+      selectCategory(categories[0].id)
     }
+  }, [categories, selectCategory, selectedCategoryId])
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (!categoryId || done) return
+
+      if (event.code === "Space") {
+        event.preventDefault()
+        toggleFlip()
+        return
+      }
+
+      const keyMap = ratingMap.find((item) => item.key === event.key)
+      if (!keyMap || !flipped) return
+
+      event.preventDefault()
+      answer(keyMap.rating)
+    }
+
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
+  }, [answer, categoryId, done, flipped, toggleFlip])
+
+  function startCurrentSession() {
+    let targetCategory = availableCategory
+    if (
+      activeCategory &&
+      cards.some((card) => card.categoryId === activeCategory.id)
+    ) {
+      targetCategory = activeCategory
+    }
+
+    if (!targetCategory) return
+
+    const nextCards = cards.filter(
+      (card) => card.categoryId === targetCategory.id
+    )
+    startSession(
+      targetCategory.id,
+      nextCards.map((card) => card.id)
+    )
   }
 
-  function restart() {
-    setCardIndex(0)
-    setFlipped(false)
-    setResults([])
-    setDone(false)
-    setTimer(0)
-    setTotalTime(0)
+  function restartCurrentSession() {
+    if (!sessionCategory) return
+    const nextCards = cards.filter(
+      (card) => card.categoryId === sessionCategory.id
+    )
+    startSession(
+      sessionCategory.id,
+      nextCards.map((card) => card.id)
+    )
+  }
+
+  if (!categories.length) {
+    return (
+      <div className="mx-auto max-w-xl">
+        <Card className="space-y-4 text-center">
+          <div className="text-4xl">📚</div>
+          <h2 className="text-2xl font-bold text-foreground">Sem categorias</h2>
+          <p className="text-sm text-muted-foreground">
+            Crie uma categoria e adicione cartas antes de iniciar a revisão.
+          </p>
+        </Card>
+      </div>
+    )
+  }
+
+  if (!categoryId || total === 0) {
+    const hasAnyCards = cards.length > 0
+    const canStart = Boolean(availableCategory)
+
+    return (
+      <div className="mx-auto max-w-2xl space-y-6">
+        <Card className="space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-bold text-foreground">
+                Preparar sessão
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Escolha uma categoria com cartas cadastradas.
+              </p>
+            </div>
+            <Badge variant="pink">
+              {categories.length} categorias cadastradas
+            </Badge>
+          </div>
+
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="space-y-3">
+              {categories.map((category) => {
+                const count = cards.filter(
+                  (card) => card.categoryId === category.id
+                ).length
+                const disabled = count === 0
+                return (
+                  <button
+                    key={category.id}
+                    disabled={disabled}
+                    onClick={() => selectCategory(category.id)}
+                    className="flex w-full items-center justify-between rounded-xl border p-3 text-left transition-colors hover:border-muted-foreground/30 disabled:cursor-not-allowed disabled:opacity-40"
+                    style={
+                      selectedCategoryId === category.id
+                        ? {
+                            borderColor: category.color,
+                            background: `${category.color}10`,
+                          }
+                        : undefined
+                    }
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="flex h-10 w-10 items-center justify-center rounded-xl text-lg"
+                        style={{ background: `${category.color}20` }}
+                      >
+                        {category.icon}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-foreground">
+                          {category.name}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {count} cartas
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-xs text-muted-foreground">
+                      {disabled ? "Sem cartas" : "Selecionar"}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+
+            <Card className="space-y-3">
+              <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                Modelo de uso
+              </p>
+              <p className="text-sm text-muted-foreground">
+                1. Selecione uma categoria.
+                <br />
+                2. Inicie a sessão.
+                <br />
+                3. Espaço revela, `1` a `4` respondem.
+              </p>
+              <button
+                onClick={startCurrentSession}
+                disabled={!canStart}
+                className="w-full rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90"
+                style={{ background: C.pink }}
+              >
+                Iniciar revisão
+              </button>
+            </Card>
+          </div>
+
+          {!hasAnyCards && (
+            <p className="text-sm text-muted-foreground">
+              Nenhuma carta cadastrada ainda.
+            </p>
+          )}
+        </Card>
+      </div>
+    )
   }
 
   if (done) {
-    const correct = results.filter((r) => r === "right" || r === "easy").length
-    const acc = Math.round((correct / total) * 100)
-    const avgTime = Math.round(totalTime / total)
-    const points = correct * 10 + results.filter((r) => r === "easy").length * 5
+    const correct = results.filter(
+      (result) => result === "right" || result === "easy"
+    ).length
+    const accuracy = total === 0 ? 0 : Math.round((correct / total) * 100)
+    const easyCount = results.filter((result) => result === "easy").length
+    const points = correct * 10 + easyCount * 5
 
     return (
-      <div className="mx-auto max-w-lg">
-        <Card className="py-10 text-center">
-          <div className="mb-4 text-4xl">🎉</div>
-          <h2
-            className="mb-1 text-2xl font-bold"
-            style={{ fontFamily: "Roboto, sans-serif" }}
-          >
-            Sessão concluída!
-          </h2>
-          <p className="mb-8 text-sm text-muted-foreground">
-            Anatomia · {total} cards
-          </p>
-          <div className="mb-8 grid grid-cols-2 gap-4">
+      <div className="mx-auto max-w-2xl">
+        <Card className="space-y-6 text-center">
+          <div className="text-4xl">✅</div>
+          <div>
+            <h2 className="text-2xl font-bold text-foreground">
+              Sessão concluída
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              {sessionCategory?.name} · {total} cartas
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
             <div className="rounded-xl bg-muted p-4">
-              <p
-                className="text-3xl font-bold"
-                style={{ color: C.success, fontFamily: "Roboto, sans-serif" }}
-              >
-                {acc}%
+              <p className="text-3xl font-bold" style={{ color: C.success }}>
+                {accuracy}%
               </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Taxa de acerto
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground">Precisão</p>
             </div>
             <div className="rounded-xl bg-muted p-4">
-              <p
-                className="text-3xl font-bold"
-                style={{ color: C.pink, fontFamily: "Roboto, sans-serif" }}
-              >
+              <p className="text-3xl font-bold" style={{ color: C.pink }}>
                 {points}
               </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Pontos ganhos
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground">Pontos</p>
             </div>
             <div className="rounded-xl bg-muted p-4">
-              <p
-                className="text-3xl font-bold"
-                style={{ fontFamily: "Roboto, sans-serif" }}
-              >
-                {avgTime}s
+              <p className="text-3xl font-bold text-foreground">
+                {Math.round(elapsedSeconds / Math.max(total, 1))}s
               </p>
-              <p className="mt-1 text-xs text-muted-foreground">Tempo médio</p>
+              <p className="mt-1 text-xs text-muted-foreground">Média</p>
             </div>
             <div className="rounded-xl bg-muted p-4">
-              <p
-                className="text-3xl font-bold"
-                style={{ color: C.mauve, fontFamily: "Roboto, sans-serif" }}
-              >
-                +2
+              <p className="text-3xl font-bold" style={{ color: C.mauve }}>
+                {results.length}
               </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Posições no ranking
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground">Respostas</p>
             </div>
           </div>
-          <div className="flex justify-center gap-3">
+
+          <div className="flex flex-wrap justify-center gap-3">
             <button
-              onClick={restart}
+              onClick={restartCurrentSession}
               className="flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-muted"
             >
               <RotateCcw size={14} /> Repetir
             </button>
             <button
-              className="rounded-lg px-6 py-2.5 text-sm font-bold text-white transition-all hover:opacity-90"
+              onClick={() => {
+                if (sessionCategory) {
+                  startSession(
+                    sessionCategory.id,
+                    sessionCards.map((card) => card.id)
+                  )
+                }
+              }}
+              className="rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90"
               style={{ background: C.pink }}
             >
-              Próximo stack
+              Nova rodada
             </button>
           </div>
         </Card>
@@ -134,50 +335,27 @@ export function ReviewPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
+    <div className="mx-auto max-w-3xl space-y-6">
       <div className="space-y-2">
         <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span>Anatomia</span>
+          <span>{sessionCategory?.name}</span>
           <span>
-            {cardIndex + 1} / {total}
+            {currentIndex + 1} / {total}
           </span>
         </div>
-        <ProgressBar value={(cardIndex / total) * 100} />
-        <div className="flex gap-1">
-          {reviewCards.map((_, i) => (
-            <div
-              key={i}
-              className="h-1 flex-1 rounded-full transition-all"
-              style={{
-                background:
-                  i < results.length
-                    ? results[i] === "easy" || results[i] === "right"
-                      ? C.success
-                      : results[i] === "hard"
-                        ? C.warning
-                        : C.danger
-                    : i === cardIndex
-                      ? C.pink
-                      : "rgba(255,255,255,0.08)",
-              }}
-            />
-          ))}
-        </div>
+        <ProgressBar value={(currentIndex / Math.max(total, 1)) * 100} />
       </div>
 
-      <div className="flex justify-end">
-        <div
-          className="flex items-center gap-1.5 text-xs text-muted-foreground"
-          style={{ fontFamily: "JetBrains Mono, monospace" }}
-        >
-          <Clock size={12} />
-          {timer}s
+      <div className="flex items-center justify-between">
+        <div className="rounded-lg border border-border bg-card px-3 py-2 text-xs text-muted-foreground">
+          Espaço revela, `1` a `4` respondem
         </div>
+        {formatTimer(elapsedSeconds)}
       </div>
 
       <div
-        className="card-flip h-64 cursor-pointer"
-        onClick={() => setFlipped((f) => !f)}
+        className="card-flip h-72 cursor-pointer"
+        onClick={() => toggleFlip()}
       >
         <div className={`card-flip-inner h-full ${flipped ? "flipped" : ""}`}>
           <div className="card-face absolute inset-0 flex flex-col items-center justify-center rounded-2xl border border-border bg-card p-8 text-center">
@@ -188,10 +366,10 @@ export function ReviewPage() {
               className="text-lg leading-relaxed font-medium text-foreground"
               style={{ fontFamily: "Roboto, sans-serif" }}
             >
-              {card.q}
+              {currentCard?.question}
             </p>
             <p className="absolute bottom-4 flex items-center gap-1 text-xs text-muted-foreground">
-              <Eye size={12} /> Clique para revelar
+              <Eye size={12} /> Clique ou pressione espaço
             </p>
           </div>
           <div
@@ -204,78 +382,41 @@ export function ReviewPage() {
             <div className="absolute top-4 left-4">
               <Badge variant="pink">Resposta</Badge>
             </div>
-            <p className="text-sm leading-relaxed text-foreground">{card.a}</p>
+            <p className="text-sm leading-relaxed text-foreground">
+              {currentCard?.answer}
+            </p>
           </div>
         </div>
       </div>
 
-      {flipped ? (
-        <div className="grid grid-cols-4 gap-3">
-          {[
-            {
-              label: "Errei",
-              rating: "wrong" as const,
-              color: C.danger,
-              bg: `${C.danger}15`,
-              key: "1",
-            },
-            {
-              label: "Difícil",
-              rating: "hard" as const,
-              color: C.warning,
-              bg: `${C.warning}15`,
-              key: "2",
-            },
-            {
-              label: "Acertei",
-              rating: "right" as const,
-              color: C.success,
-              bg: `${C.success}15`,
-              key: "3",
-            },
-            {
-              label: "Fácil",
-              rating: "easy" as const,
-              color: C.pinkLight,
-              bg: `${C.pink}20`,
-              key: "4",
-            },
-          ].map(({ label, rating, color, bg, key }) => (
-            <button
-              key={rating}
-              onClick={() => answer(rating)}
-              className="flex flex-col items-center gap-1.5 rounded-xl border py-3 text-sm font-medium transition-all hover:scale-105"
-              style={{ color, background: bg, borderColor: `${color}30` }}
-            >
-              {label}
-              <span className="font-mono text-xs opacity-50">[{key}]</span>
-            </button>
-          ))}
-        </div>
-      ) : (
-        <div className="flex items-center justify-center">
+      <div className="grid grid-cols-4 gap-3">
+        {ratingMap.map(({ label, rating, color, bg, key }) => (
           <button
-            onClick={() => setFlipped(true)}
-            className="rounded-xl px-8 py-3 font-semibold text-white transition-all hover:scale-105 hover:opacity-90"
-            style={{ background: C.pink }}
+            key={rating}
+            onClick={() => {
+              if (flipped) {
+                answer(rating)
+              }
+            }}
+            className="flex flex-col items-center gap-1.5 rounded-xl border py-3 text-sm font-medium transition-all hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50"
+            style={{ color, background: bg, borderColor: `${color}30` }}
+            disabled={!flipped}
           >
-            Revelar resposta{" "}
-            <span className="ml-2 text-xs opacity-60">[Espaço]</span>
+            {label}
+            <span className="font-mono text-xs opacity-50">[{key}]</span>
           </button>
-        </div>
-      )}
+        ))}
+      </div>
 
-      <p className="text-center text-xs text-muted-foreground">
-        Atalhos:{" "}
-        <kbd className="rounded bg-muted px-1 py-0.5 font-mono text-xs">
-          Espaço
-        </kbd>{" "}
-        revelar ·{" "}
-        <kbd className="rounded bg-muted px-1 py-0.5 font-mono text-xs">
-          1–4
-        </kbd>{" "}
-        avaliar
-      </p>
+      <div className="flex justify-center">
+        <button
+          onClick={() => toggleFlip()}
+          className="rounded-xl px-8 py-3 font-semibold text-white transition-all hover:scale-105 hover:opacity-90"
+          style={{ background: C.pink }}
+        >
+          {flipped ? "Voltar para pergunta" : "Revelar resposta"}
+        </button>
+      </div>
     </div>
   )
 }

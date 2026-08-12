@@ -15,7 +15,12 @@ import {
 } from "recharts"
 import { ChevronLeft, ChevronRight, Download, Filter } from "lucide-react"
 
-import { Badge, Card, CustomTooltip, StatCard } from "@/components/app-primitives"
+import {
+  Badge,
+  Card,
+  CustomTooltip,
+  StatCard,
+} from "@/components/app-primitives"
 import {
   C,
   barData,
@@ -37,7 +42,7 @@ export function DashboardPage() {
   )
 
   return (
-    <div className="max-w-7xl space-y-6">
+    <div className="max-w-9xl space-y-6">
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
         {dashboardStats.map((stat) => (
           <StatCard key={stat.label} {...stat} />
