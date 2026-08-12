@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from "react"
 import { ArrowRight, Plus, Search, Trash2 } from "lucide-react"
+import { useEffect, useMemo, useState } from "react"
 
-import { Card, Badge, ProgressBar } from "@/components/app-primitives"
+import { Badge, Card, ProgressBar } from "@/components/app-primitives"
 import { C } from "@/lib/theme"
-import { useCategoryStore } from "@/stores/category-store"
 import { useCardStore } from "@/stores/card-store"
+import { useCategoryStore } from "@/stores/category-store"
 
 const CARD_IMPORT_TEMPLATE = {
   cards: [
@@ -293,136 +293,6 @@ export function StacksPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card className="space-y-4">
-          <div>
-            <h3 className="text-sm font-semibold text-foreground">
-              Nova categoria
-            </h3>
-            <p className="text-xs text-muted-foreground">
-              Organize conjuntos de cartas por tema.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="mb-2 block text-xs font-medium tracking-wider text-muted-foreground uppercase">
-                Nome
-              </label>
-              <input
-                value={categoryForm.name}
-                onChange={(e) =>
-                  setCategoryForm((current) => ({
-                    ...current,
-                    name: e.target.value,
-                  }))
-                }
-                className="w-full rounded-lg border border-border bg-muted px-3 py-2 text-sm outline-none"
-                placeholder="Ex.: Anatomia"
-              />
-            </div>
-            <div>
-              <label className="mb-2 block text-xs font-medium tracking-wider text-muted-foreground uppercase">
-                Ícone
-              </label>
-              <input
-                value={categoryForm.icon}
-                onChange={(e) =>
-                  setCategoryForm((current) => ({
-                    ...current,
-                    icon: e.target.value,
-                  }))
-                }
-                className="w-full rounded-lg border border-border bg-muted px-3 py-2 text-sm outline-none"
-                placeholder="📚"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="mb-2 block text-xs font-medium tracking-wider text-muted-foreground uppercase">
-                Cor
-              </label>
-              <input
-                type="color"
-                value={categoryForm.color}
-                onChange={(e) =>
-                  setCategoryForm((current) => ({
-                    ...current,
-                    color: e.target.value,
-                  }))
-                }
-                className="h-10 w-full rounded-lg border border-border bg-muted p-1"
-              />
-            </div>
-            <div>
-              <label className="mb-2 block text-xs font-medium tracking-wider text-muted-foreground uppercase">
-                Descrição
-              </label>
-              <input
-                value={categoryForm.description}
-                onChange={(e) =>
-                  setCategoryForm((current) => ({
-                    ...current,
-                    description: e.target.value,
-                  }))
-                }
-                className="w-full rounded-lg border border-border bg-muted px-3 py-2 text-sm outline-none"
-                placeholder="Opcional"
-              />
-            </div>
-          </div>
-
-          <button
-            onClick={onCreateCategory}
-            className="flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90"
-            style={{ background: C.pink }}
-          >
-            <Plus size={14} /> Criar categoria
-          </button>
-        </Card>
-
-        <Card className="space-y-4 lg:col-span-2">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <h3 className="text-sm font-semibold text-foreground">
-                Importação JSON
-              </h3>
-              <p className="text-xs text-muted-foreground">
-                Cole a saída de uma IA ou um payload do seu back.
-              </p>
-            </div>
-            <button
-              onClick={resetJsonModel}
-              className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Resetar modelo
-            </button>
-          </div>
-
-          <textarea
-            value={jsonModel}
-            onChange={(e) => setJsonModel(e.target.value)}
-            rows={12}
-            className="w-full rounded-xl border border-border bg-muted px-3 py-3 font-mono text-xs text-foreground outline-none"
-          />
-
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              onClick={onImportJson}
-              className="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90"
-              style={{ background: C.pink }}
-            >
-              Importar JSON <ArrowRight size={14} />
-            </button>
-            <p className="text-xs text-muted-foreground">
-              {"Estrutura aceita: {cards: [...]} ou uma lista direta."}
-            </p>
-          </div>
-        </Card>
-      </div>
-
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
         <Card className="xl:col-span-1">
           <div className="mb-4 flex items-center justify-between">
@@ -612,7 +482,7 @@ export function StacksPage() {
                   <Badge>{selectedCards.length}</Badge>
                 </div>
 
-                <div className="max-h-[520px] space-y-3 overflow-y-auto pr-1">
+                <div className="max-h-130 space-y-3 overflow-y-auto pr-1">
                   {selectedCards.length === 0 ? (
                     <div className="rounded-xl border border-dashed border-border p-6 text-sm text-muted-foreground">
                       Nenhuma carta ainda. Crie manualmente ou importe por JSON.
@@ -664,6 +534,136 @@ export function StacksPage() {
               </div>
             </div>
           )}
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <Card className="space-y-4">
+          <div>
+            <h3 className="text-sm font-semibold text-foreground">
+              Nova categoria
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              Organize conjuntos de cartas por tema.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="mb-2 block text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                Nome
+              </label>
+              <input
+                value={categoryForm.name}
+                onChange={(e) =>
+                  setCategoryForm((current) => ({
+                    ...current,
+                    name: e.target.value,
+                  }))
+                }
+                className="w-full rounded-lg border border-border bg-muted px-3 py-2 text-sm outline-none"
+                placeholder="Ex.: Anatomia"
+              />
+            </div>
+            <div>
+              <label className="mb-2 block text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                Ícone
+              </label>
+              <input
+                value={categoryForm.icon}
+                onChange={(e) =>
+                  setCategoryForm((current) => ({
+                    ...current,
+                    icon: e.target.value,
+                  }))
+                }
+                className="w-full rounded-lg border border-border bg-muted px-3 py-2 text-sm outline-none"
+                placeholder="📚"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="mb-2 block text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                Cor
+              </label>
+              <input
+                type="color"
+                value={categoryForm.color}
+                onChange={(e) =>
+                  setCategoryForm((current) => ({
+                    ...current,
+                    color: e.target.value,
+                  }))
+                }
+                className="h-10 w-full rounded-lg border border-border bg-muted p-1"
+              />
+            </div>
+            <div>
+              <label className="mb-2 block text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                Descrição
+              </label>
+              <input
+                value={categoryForm.description}
+                onChange={(e) =>
+                  setCategoryForm((current) => ({
+                    ...current,
+                    description: e.target.value,
+                  }))
+                }
+                className="w-full rounded-lg border border-border bg-muted px-3 py-2 text-sm outline-none"
+                placeholder="Opcional"
+              />
+            </div>
+          </div>
+
+          <button
+            onClick={onCreateCategory}
+            className="flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90"
+            style={{ background: C.pink }}
+          >
+            <Plus size={14} /> Criar categoria
+          </button>
+        </Card>
+
+        <Card className="space-y-4 lg:col-span-2">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h3 className="text-sm font-semibold text-foreground">
+                Importação JSON
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Cole a saída de uma IA ou um payload do seu back.
+              </p>
+            </div>
+            <button
+              onClick={resetJsonModel}
+              className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Resetar modelo
+            </button>
+          </div>
+
+          <textarea
+            value={jsonModel}
+            onChange={(e) => setJsonModel(e.target.value)}
+            rows={12}
+            className="w-full rounded-xl border border-border bg-muted px-3 py-3 font-mono text-xs text-foreground outline-none"
+          />
+
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={onImportJson}
+              className="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90"
+              style={{ background: C.pink }}
+            >
+              Importar JSON <ArrowRight size={14} />
+            </button>
+            <p className="text-xs text-muted-foreground">
+              {"Estrutura aceita: {cards: [...]} ou uma lista direta."}
+            </p>
+          </div>
         </Card>
       </div>
 

@@ -1,8 +1,8 @@
-import { useMemo } from "react"
 import { AlignLeft, Maximize2 } from "lucide-react"
+import { useMemo } from "react"
 
-import { formatDate } from "@/lib/theme"
 import { customPageTitles } from "@/lib/navigation"
+import { formatDate } from "@/lib/theme"
 
 type AppHeaderProps = {
   onToggleSidebar: () => void

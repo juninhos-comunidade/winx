@@ -11,7 +11,7 @@ import {
 import AppHeader from "@/components/app-header"
 import { AppSidebar } from "@/components/app-sidebar"
 import { AchievementsPage } from "@/pages/achievements-page"
-import { DashboardPage } from "@/pages/dashboard-page"
+// import { DashboardPage } from "@/pages/dashboard-page"
 import { HistoryPage } from "@/pages/history-page"
 import { RankingPage } from "@/pages/ranking-page"
 import { ReviewPage } from "@/pages/review-page"
@@ -64,7 +64,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<AppShell />}>
-          <Route index element={<DashboardPage />} />
+          <Route index element={<StacksPage />} />
           <Route path="/stacks" element={<StacksPage />} />
           <Route path="/review" element={<ReviewPage />} />
           <Route path="/ranking" element={<RankingPage />} />

@@ -1,5 +1,5 @@
-import { useState } from "react"
 import { Eye, EyeOff, Key, Lock, Plus, RotateCcw } from "lucide-react"
+import { useState } from "react"
 
 import { Avatar, Card, Toggle } from "@/components/app-primitives"
 import { C, mockUser } from "@/lib/mock-data"

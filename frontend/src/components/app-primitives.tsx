@@ -1,5 +1,6 @@
-import type { ElementType, ReactNode } from "react"
 import { Clock } from "lucide-react"
+import type { ElementType, ReactNode } from "react"
+
 import { C } from "@/lib/theme"
 
 export function Card({

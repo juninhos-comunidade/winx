@@ -1,3 +1,4 @@
+import { ChevronLeft, ChevronRight, Download, Filter } from "lucide-react"
 import { useState } from "react"
 import {
   Bar,
@@ -13,7 +14,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
-import { ChevronLeft, ChevronRight, Download, Filter } from "lucide-react"
 
 import {
   Badge,
@@ -22,8 +22,8 @@ import {
   StatCard,
 } from "@/components/app-primitives"
 import {
-  C,
   barData,
+  C,
   dashboardStats,
   donutData,
   heatColor,

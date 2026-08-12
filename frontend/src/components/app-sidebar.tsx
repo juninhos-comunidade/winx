@@ -1,11 +1,12 @@
+import { Flame,LogOut } from "lucide-react"
 import { Link, NavLink } from "react-router"
-import { LogOut } from "lucide-react"
+
 import logo from "/favicon.ico"
+import { Avatar } from "@/components/app-primitives"
+import { navItems } from "@/lib/navigation"
+import { C } from "@/lib/theme"
 
 import packageJson from "../../package.json"
-import { Avatar } from "@/components/app-primitives"
-import { C } from "@/lib/theme"
-import { navItems } from "@/lib/navigation"
 
 type AppSidebarProps = {
   open: boolean
@@ -88,15 +89,15 @@ export function AppSidebar({ open }: AppSidebarProps) {
       >
         {open ? (
           <div className="flex items-center gap-3 px-1">
-            <Avatar initials="CR" size="sm" />
+            <Avatar initials="U" size="sm" />
             <div className="min-w-0 flex-1">
               <p className="truncate text-xs font-medium text-foreground">
-                Core mode
+                User
               </p>
-              {/* <p className="flex items-center gap-1 text-xs text-muted-foreground">
+              <p className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Flame size={10} style={{ color: C.pink }} />
-                local only
-              </p> */}
+                Conta padrão
+              </p>
             </div>
             <button className="text-muted-foreground transition-colors hover:text-foreground">
               <LogOut size={14} />
