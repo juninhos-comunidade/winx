@@ -1,4 +1,4 @@
-import { Flame,LogOut } from "lucide-react"
+import { Flame, LogOut } from "lucide-react"
 import { Link, NavLink } from "react-router"
 
 import logo from "/favicon.ico"

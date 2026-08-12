@@ -1,6 +1,6 @@
 import { Flame } from "lucide-react"
 
-import { Badge,Card, ProgressBar } from "@/components/app-primitives"
+import { Badge, Card, ProgressBar } from "@/components/app-primitives"
 import { achievements, C, mockUser } from "@/lib/mock-data"
 
 export function AchievementsPage() {

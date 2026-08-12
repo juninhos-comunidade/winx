@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { createJSONStorage,persist } from "zustand/middleware"
+import { createJSONStorage, persist } from "zustand/middleware"
 
 import type { Flashcard, FlashcardDifficulty } from "@/types/flashcards"
 
