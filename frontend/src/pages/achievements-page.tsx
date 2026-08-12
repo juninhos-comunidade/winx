@@ -1,6 +1,7 @@
-import { Card, ProgressBar, Badge } from "@/components/app-primitives"
-import { C, achievements, mockUser } from "@/lib/mock-data"
 import { Flame } from "lucide-react"
+
+import { Badge, Card, ProgressBar } from "@/components/app-primitives"
+import { achievements, C, mockUser } from "@/lib/mock-data"
 
 export function AchievementsPage() {
   const unlocked = achievements.filter((a) => a.unlocked).length
@@ -126,4 +127,3 @@ export function AchievementsPage() {
     </div>
   )
 }
-

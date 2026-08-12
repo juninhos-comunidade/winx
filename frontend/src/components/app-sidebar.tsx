@@ -1,9 +1,12 @@
-import { Link, NavLink } from "react-router"
 import { Flame, LogOut } from "lucide-react"
-import logo from "/favicon.ico"
+import { Link, NavLink } from "react-router"
 
+import logo from "/favicon.ico"
 import { Avatar } from "@/components/app-primitives"
-import { C, mockUser, navItems } from "@/lib/mock-data"
+import { navItems } from "@/lib/navigation"
+import { C } from "@/lib/theme"
+
+import packageJson from "../../package.json"
 
 type AppSidebarProps = {
   open: boolean
@@ -86,14 +89,14 @@ export function AppSidebar({ open }: AppSidebarProps) {
       >
         {open ? (
           <div className="flex items-center gap-3 px-1">
-            <Avatar initials={mockUser.initials} size="sm" />
+            <Avatar initials="U" size="sm" />
             <div className="min-w-0 flex-1">
               <p className="truncate text-xs font-medium text-foreground">
-                {mockUser.name}
+                User
               </p>
               <p className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Flame size={10} style={{ color: C.pink }} />
-                {mockUser.streak} dias
+                Conta padrão
               </p>
             </div>
             <button className="text-muted-foreground transition-colors hover:text-foreground">
@@ -107,7 +110,7 @@ export function AppSidebar({ open }: AppSidebarProps) {
         )}
         {open && (
           <p className="text-center text-xs text-muted-foreground opacity-40">
-            v2.4.1 · {mockUser.plan}
+            v {packageJson.version}
           </p>
         )}
       </div>

@@ -1,20 +1,21 @@
-import { useMemo, useState } from "react"
-import { AlignLeft, Bell, Maximize2, Search } from "lucide-react"
+import { AlignLeft, Maximize2 } from "lucide-react"
+import { useMemo } from "react"
 
-import { C, customPageTitles, formatDate, mockUser } from "@/lib/mock-data"
+import { customPageTitles } from "@/lib/navigation"
+import { formatDate } from "@/lib/theme"
 
 type AppHeaderProps = {
   onToggleSidebar: () => void
   pathname: string
 }
 
-export function AppHeader({
+export default function AppHeader({
   onToggleSidebar,
   pathname,
 }: AppHeaderProps) {
-  const [notifs, setNotifs] = useState(3)
+  // const [notifs, setNotifs] = useState(3)
   const title = useMemo(
-    () => customPageTitles[pathname] ?? "Mnemo",
+    () => customPageTitles[pathname] ?? "FlashRank",
     [pathname]
   )
 
@@ -43,7 +44,7 @@ export function AppHeader({
               className="text-sm leading-none font-semibold text-foreground"
               style={{ fontFamily: "Roboto, sans-serif" }}
             >
-              Olá, {mockUser.name.split(" ")[0]} 👋
+              Fluxo principal: categorias, cartas e revisão
             </h1>
           </div>
         ) : (
@@ -56,24 +57,7 @@ export function AppHeader({
         )}
       </div>
 
-      <div className="hidden w-56 items-center gap-2 rounded-lg bg-muted px-3 py-1.5 md:flex">
-        <Search size={14} className="shrink-0 text-muted-foreground" />
-        <input
-          placeholder="Buscar..."
-          className="flex-1 bg-transparent text-xs text-foreground placeholder-muted-foreground outline-none"
-        />
-      </div>
-
-      <div
-        className="flex items-center gap-1.5 rounded-lg px-3 py-1.5"
-        style={{ background: `${C.pink}18` }}
-      >
-        <span className="text-xs font-bold" style={{ color: C.pink }}>
-          {mockUser.streak}
-        </span>
-      </div>
-
-      <button
+      {/* <button
         className="relative text-muted-foreground transition-colors hover:text-foreground"
         onClick={() => setNotifs(0)}
       >
@@ -86,7 +70,7 @@ export function AppHeader({
             {notifs}
           </span>
         )}
-      </button>
+      </button> */}
 
       <button className="text-muted-foreground transition-colors hover:text-foreground">
         <Maximize2 size={16} />

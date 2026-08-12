@@ -1,6 +1,7 @@
-import type { ElementType, ReactNode } from "react"
 import { Clock } from "lucide-react"
-import { C } from "@/lib/mock-data"
+import type { ElementType, ReactNode } from "react"
+
+import { C } from "@/lib/theme"
 
 export function Card({
   children,
@@ -172,4 +173,3 @@ export function formatTimer(seconds: number) {
     </div>
   )
 }
-

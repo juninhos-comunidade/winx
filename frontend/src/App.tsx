@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react"
-import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from "react-router"
+import {
+  BrowserRouter,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router"
 
-import { AppHeader } from "@/components/app-header"
+import AppHeader from "@/components/app-header"
 import { AppSidebar } from "@/components/app-sidebar"
 import { AchievementsPage } from "@/pages/achievements-page"
-import { DashboardPage } from "@/pages/dashboard-page"
+// import { DashboardPage } from "@/pages/dashboard-page"
 import { HistoryPage } from "@/pages/history-page"
 import { RankingPage } from "@/pages/ranking-page"
 import { ReviewPage } from "@/pages/review-page"
@@ -40,7 +47,10 @@ function AppShell() {
       <AppSidebar open={sidebarOpen} />
 
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        <AppHeader onToggleSidebar={() => setSidebarOpen((v) => !v)} pathname={location.pathname} />
+        <AppHeader
+          onToggleSidebar={() => setSidebarOpen((v) => !v)}
+          pathname={location.pathname}
+        />
         <main className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </main>
@@ -54,7 +64,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<AppShell />}>
-          <Route index element={<DashboardPage />} />
+          <Route index element={<StacksPage />} />
           <Route path="/stacks" element={<StacksPage />} />
           <Route path="/review" element={<ReviewPage />} />
           <Route path="/ranking" element={<RankingPage />} />
